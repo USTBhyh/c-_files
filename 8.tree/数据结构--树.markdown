@@ -1,0 +1,161 @@
+[TOC]
+***
+##树
+***
+###CSDN网址
+>https://blog.csdn.net/qq_30611601/article/details/80652731?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164706866716780269841783%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=164706866716780269841783&biz_id=0&spm=1018.2226.3001.4187
+***
+###树的定义
+>树是由一个**集合**以及在该**集合上定义的一种关系**构成的，集合中的元素称为树的结点，所定义的关系称为父子关系。父子关系在树的结点之间建立了一个层次结构，在这种层次结构中有一个结点具有特殊的地位，这个结点称为该树的**根结点**。
+>数据结构中有很多树的结构，其中包括二叉树、二叉搜索树、2-3树、红黑树等等，本文着重介绍**二叉树**。
+***
+###树的基本术语
+#####节点的度
+一个节点含有的子树的个数称为该节点的度
+#####叶节点或终端节点
+度为0的节点称为叶节点
+#####非终端节点或分支节点
+度不为0的节点
+#####双亲节点或父节
+若一个节点含有子节点，则这个节点称为其子节点的父节点
+#####孩子节点或子节点
+一个节点含有的子树的根节点称为该节点的子节点
+#####兄弟节点
+具有相同父节点的节点互称为兄弟节点
+#####树的度
+一棵树中，最大的节点的度称为树的度
+#####节点的层次
+从根开始定义起，根为第1层，根的子节点为第2层，以此类推
+#####树的高度或深度
+树中节点的最大层次
+#####堂兄弟节点
+双亲在同一层的节点互为堂兄弟
+#####节点的祖先
+从根到该节点所经分支上的所有节点
+#####子孙
+以某节点为根的子树中任一节点都称为该节点的子孙
+#####森林
+由m（m>=0）棵互不相交的树的集合称为森林
+***
+###树的存储结构
+####双亲表示法
+![](img/1.jpg)
+####孩子表示法
+![](img/2.jpg)
+***
+###二叉树
+>二叉树的定义：二叉树的每个结点至多只有二棵子树(不存在度大于2的结点)，二叉树的子树有左右之分，次序不能颠倒。
+####二叉树的性质
+![](img/3.jpg)
+####二叉树的实现
+#####结构
+```
+template <class DataType>
+struct BiNode
+{
+    DataType data;
+    BiNode<DataType> * lchild,*rchild;
+};
+
+template <class DataType>
+class BiTree
+{
+public:
+    BiTree(){root = Create(root);}
+    ~BiTree(){Release(root);}
+    void PreOrder(){PreOrder(root);}	//前序遍历
+    void InOrder(){InOrder(root);}		//中序遍历
+    void PostOrder(){PostOrder(root);}	//后序遍历
+private:
+    BiNode<DataType> * root;
+    BiNode<DataType> * Create(BiNode<DataType> *bt);
+    void Release(BiNode<DataType> *bt);
+    void PreOrder(BiNode<DataType> *bt);
+    void InOrder(BiNode<DataType> *bt);
+    void PostOrder(BiNode<DataType> *bt);
+};
+```
+#####建立二叉树
+```
+template <class DataType>
+BiNode<DataType> *BiTree<DataType>::Create(BiNode<DataType> *bt)
+{
+    DataType ch;
+    cin>>ch;
+    if(ch == '#') bt = NULL;
+    else{
+        bt = new BiNode<DataType>;
+        bt->data = ch;
+        bt->lchild = Create(bt->lchild);
+        bt->rchild = Create(bt->rchild);
+    }
+    return bt;
+}
+```
+#####释放二叉树
+```
+template <class DataType>
+void BiTree<DataType>::Release(BiNode<DataType> *bt)
+{
+    if(bt != NULL){
+        Release(bt->lchild);
+        Release(bt->rchild);
+        delete bt;
+    }
+}
+```
+#####前序遍历
+```
+template <class DataType>
+void BiTree<DataType>::PreOrder(BiNode<DataType> *bt)
+{
+    if(bt == NULL) return;
+    else{
+        cout<<bt->data;
+        PreOrder(bt->lchild);
+        PreOrder(bt->rchild);
+    }
+}
+```
+#####中序遍历
+```
+template <class DataType>
+void BiTree<DataType>::InOrder(BiNode<DataType> *bt)
+{
+    if(bt == NULL) return;
+    else{
+        InOrder(bt->lchild);
+        cout<<bt->data;
+        InOrder(bt->rchild);
+    }
+}
+```
+#####后序遍历
+```
+template <class DataType>
+void BiTree<DataType>::PostOrder(BiNode<DataType> *bt)
+{
+    if(bt == NULL) return;
+    else{
+        PostOrder(bt->lchild);
+        PostOrder(bt->rchild);
+        cout<<bt->data;
+    }
+}
+```
+####满二叉树
+>一棵深度为k且有（2的k次方-1）个结点的二叉树称为满二叉树。
+![](img/4.jpg)
+#####满二叉树性质
+![](img/5.jpg)
+####完全二叉树
+>深度为k的，有n个结点的二叉树，当且仅当其每一个结点都与深度为k的满二叉树中编号从1至n的结点一一对应时，称之为完全二叉树。
+![](img/6.jpg)
+
+####二叉排序树
+>二叉查找树定义：又称为是二叉排序树（Binary Sort Tree）或二叉搜索树。
+
+>二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：
+1.若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值；
+2.若它的右子树不空，则右子树上所有结点的值均大于或等于它的根结点的值；
+3.它的左、右子树也分别为二叉排序树。
